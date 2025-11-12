@@ -1,5 +1,7 @@
 ## Developer Portfolio Template (Hugo + PaperMod)
 
+**[🌐 Live Demo](https://enverbashirov.com)**
+
 Clean, production-friendly Hugo + PaperMod starter for a personal site (Landing / Blog / Projects / CV). Includes dynamic blog sidebar, environment-based baseURL, and extensible theming.
 
 ### Features
