@@ -1,0 +1,31 @@
+{{- $currentPage := . }}
+{{- $backlinks := slice }}
+
+{{- range where .Site.RegularPages "Section" "blog" }}
+  {{- if ne .RelPermalink $currentPage.RelPermalink }}
+    {{- $content := .RawContent }}
+    {{- $currentTitle := $currentPage.Title }}
+    {{- $currentPermalink := $currentPage.RelPermalink }}
+    
+    {{- if or (in $content $currentTitle) (in $content $currentPermalink) }}
+      {{- $backlinks = $backlinks | append . }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- if gt (len $backlinks) 0 }}
+<section class="backlinks-section">
+  <h2>🔗 Referenced By</h2>
+  <p class="backlinks-intro">The following pages link to this article:</p>
+  <ul class="backlinks-list">
+    {{- range $backlinks }}
+    <li class="backlink-item">
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      {{- if .Params.description }}
+      <p class="backlink-description">{{ .Params.description }}</p>
+      {{- end }}
+    </li>
+    {{- end }}
+  </ul>
+</section>
+{{- end }}

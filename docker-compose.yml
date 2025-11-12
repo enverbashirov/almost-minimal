@@ -1,0 +1,21 @@
+services:
+  mysite-main:
+    build:
+      context: .
+      args:
+        - SITE_BASE_URL=${SITE_BASE_URL}
+    container_name: mysite-template
+    environment:
+      - SITE_BASE_URL=${SITE_BASE_URL}
+    volumes:
+      - ./:/src
+    ports:
+      - "1313:1313"
+    restart: unless-stopped
+    networks:
+      - proxy_network
+
+networks:
+  proxy_network:
+    external: true
+

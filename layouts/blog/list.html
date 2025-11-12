@@ -1,0 +1,66 @@
+{{- define "main" }}
+<div class="blog-container">
+  {{- partial "blog/sidebar.html" . }}
+  
+  <main class="blog-main">
+    <article class="blog-landing">
+      {{- if .Content }}
+        <!-- Custom content from _index.md -->
+        <div class="custom-content">
+          {{ .Content }}
+        </div>
+      {{- else }}
+        <!-- Default blog listing -->
+        <header class="blog-header">
+          <h1 class="blog-title">{{ .Title }}</h1>
+        </header>
+
+        
+
+        {{- $pages := where .Site.RegularPages "Section" "blog" }}
+        {{- $pages = where $pages "Draft" false }}
+        {{- $pages = $pages.ByDate.Reverse }}
+
+        {{- if gt (len $pages) 0 }}
+        <section class="blog-posts">
+          <h2>Latest Articles</h2>
+          <div class="posts-grid">
+            {{- range $pages }}
+            <article class="post-card">
+              <div class="post-meta">
+                <time datetime="{{ .Date.Format "2006-01-02" }}">
+                  {{ .Date.Format "Jan 2, 2006" }}
+                </time>
+                {{- if .Params.categories }}
+                <span class="post-category">{{ index .Params.categories 0 }}</span>
+                {{- end }}
+              </div>
+              <h3 class="post-title">
+                <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+              </h3>
+              {{- if .Params.description }}
+              <p class="post-description">{{ .Params.description }}</p>
+              {{- end }}
+              {{- if .Params.tags }}
+              <div class="post-tags">
+                {{- range first 3 .Params.tags }}
+                <span class="tag">#{{ . }}</span>
+                {{- end }}
+              </div>
+              {{- end }}
+              <a class="card-link" href="{{ .RelPermalink }}" aria-label="Read {{ .Title | plainify }}"></a>
+            </article>
+            {{- end }}
+          </div>
+        </section>
+        {{- else }}
+        <div style="text-align: center; padding: 3rem 0;">
+          <h2 style="font-size: 2rem; margin-bottom: 1rem;">📝 No Articles Yet</h2>
+          <p style="font-size: 1.1rem;">Articles are being written and will be published soon!</p>
+        </div>
+        {{- end }}
+      {{- end }}
+    </article>
+  </main>
+</div>
+{{- end }}

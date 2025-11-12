@@ -1,0 +1,94 @@
+baseURL = "/" # Will be overridden by Docker/CLI --baseURL or SITE_BASE_URL
+languageCode = "en-us"
+title = "Dev Portfolio"
+theme = "PaperMod"
+
+# Note: Do not ignore `_index.md` files — they are required for sections.
+# If you need to exclude specific content, prefer putting it under a folder like `content/drafts/`
+# and set `build` options or front matter instead of a broad ignore regex.
+
+[params]
+  env = "production"
+  defaultTheme = "auto"   # auto/dark/light
+  ShowReadingTime = true
+  ShowShareButtons = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowToc = true
+  ShowCodeCopyButtons = true
+  comments = false
+
+[params.profileMode]
+  enabled = true
+  title = "Your Name Here"            # Shown prominently on landing page
+  subtitle = "Role | Tagline | Location"  # Short branding line
+  imageUrl = "https://picsum.photos/400"           # Random placeholder portrait (replace anytime)
+  imageTitle = "Profile picture"
+
+# Social icons on landing page (replace with your links)
+[[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/yourhandle"
+[[params.socialIcons]]
+  name = "linkedin"
+  url = "https://www.linkedin.com/in/yourhandle"
+[[params.socialIcons]]
+  name = "email"
+  url = "mailto:you@example.com"
+[[params.socialIcons]]
+  name = "twitter"
+  url = "https://twitter.com/yourhandle"
+
+
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true  # Allow HTML in markdown (for Obsidian embeds, callouts)
+    [markup.goldmark.parser]
+      [markup.goldmark.parser.attribute]
+        block = true
+        title = true
+    [markup.goldmark.extensions]
+      definitionList = true
+      footnote = true
+      linkify = true
+      strikethrough = true
+      table = true
+      taskList = true
+      typographer = true
+  [markup.highlight]
+    anchorLineNos = false
+    codeFences = true
+    guessSyntax = true
+    hl_Lines = ""
+    lineAnchors = ""
+    lineNoStart = 1
+    lineNos = false
+    lineNumbersInTable = true
+    noClasses = false
+    style = "monokai"
+    tabWidth = 4
+  [markup.tableOfContents]
+    endLevel = 4
+    ordered = false
+    startLevel = 2
+
+[menu]
+  [[menu.main]]
+    name = "Blog"
+    url = "/blog/"
+    weight = 1
+
+  [[menu.main]]
+    name = "Projects"
+    url = "/projects/"
+    weight = 2
+
+  [[menu.main]]
+    name = "About"
+    url = "/cv/"
+    weight = 3

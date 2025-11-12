@@ -1,0 +1,203 @@
+<script>
+// Inject a custom theme slider and enable wikilinks processing
+(function() {
+  const ENABLE_WIKILINKS = true; // flip to false to turn off experimental wikilinks + previews
+
+  function insertThemeSlider() {
+    var original = document.getElementById('theme-toggle');
+    var existing = document.getElementById('theme-slider-toggle');
+    if (!existing) {
+      var btn = document.createElement('button');
+      btn.id = 'theme-slider-toggle';
+      btn.className = 'theme-slider-toggle';
+      btn.setAttribute('accesskey', 't');
+      btn.setAttribute('title', '(Alt + T)');
+      btn.setAttribute('aria-label', 'Toggle theme');
+      btn.innerHTML = ''+
+        '<svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+          '<circle cx="12" cy="12" r="4"></circle>'+
+          '<path d="M12 2v2M12 20v2M4 12H2M22 12h-2M17.66 6.34l1.41-1.41M4.93 19.07l1.41-1.41M6.34 6.34L4.93 4.93M19.07 19.07l-1.41-1.41"></path>'+
+        '</svg>'+ 
+        '<svg class="icon icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="18" height="18">'+
+          '<path d="M21.752 15.002A9 9 0 1111 3a7 7 0 0010.752 12.002z" />'+
+        '</svg>';
+      btn.addEventListener('click', function() {
+        if (original) { original.click(); return; }
+        // Manual toggle fallback if original toggle is absent
+        try {
+          var root = document.documentElement;
+          var cur = root.getAttribute('data-theme') || localStorage.getItem('pref-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          var next = (cur === 'dark') ? 'light' : 'dark';
+          root.setAttribute('data-theme', next);
+          localStorage.setItem('pref-theme', next);
+        } catch(e) {}
+      });
+      // Default: place after original if exists
+      if (original && original.parentNode) {
+        if (original.nextSibling) original.parentNode.insertBefore(btn, original.nextSibling);
+        else original.parentNode.appendChild(btn);
+      }
+      existing = btn;
+    }
+    // Place near top-right name: prefer PaperMod's .logo-switches, else header
+    try {
+      var target = document.querySelector('header .logo-switches') || document.querySelector('header .right') || document.querySelector('header');
+      if (target) target.appendChild(existing);
+    } catch(e) { /* noop */ }
+  }
+
+  // --- Wikilinks ---
+  // Map injected from Hugo: window.__WIKI_INDEX = [{title, slug, url, summary}]
+  function normalizeKey(s) {
+    return (s||'')
+      .toLowerCase()
+      .trim()
+      .replace(/[_\s]+/g, '-')
+      .replace(/[^a-z0-9\-]/g, '')
+      .replace(/-+/g, '-');
+  }
+
+  function buildIndexMaps(list) {
+    var bySlug = Object.create(null);
+    var byTitle = Object.create(null);
+    (list||[]).forEach(function(p){
+      bySlug[normalizeKey(p.slug || p.title)] = p;
+      byTitle[(p.title||'').toLowerCase()] = p;
+    });
+    return { bySlug: bySlug, byTitle: byTitle };
+  }
+
+  function transformWikilinks(root, maps) {
+    if (!root) return;
+    var SKIP = new Set(['CODE','PRE','A','SCRIPT','STYLE']);
+    var regex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g; // [[Target|Alias]] or [[Target]]
+
+    function processNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        var text = node.nodeValue;
+        if (!regex.test(text)) return; // fast path
+        regex.lastIndex = 0;
+        var frag = document.createDocumentFragment();
+        var lastIndex = 0, m;
+        while ((m = regex.exec(text)) !== null) {
+          var before = text.slice(lastIndex, m.index);
+          if (before) frag.appendChild(document.createTextNode(before));
+          var target = m[1].trim();
+          var alias = (m[2] && m[2].trim()) || target;
+          var key = normalizeKey(target);
+          var page = maps.bySlug[key] || maps.byTitle[target.toLowerCase()] || null;
+          var a = document.createElement('a');
+          a.className = 'wikilink';
+          a.textContent = alias;
+          if (page) {
+            a.href = page.url;
+            a.setAttribute('data-wiki-slug', key);
+          } else {
+            a.href = '#';
+            a.classList.add('wikilink-missing');
+          }
+          frag.appendChild(a);
+          lastIndex = regex.lastIndex;
+        }
+        var after = text.slice(lastIndex);
+        if (after) frag.appendChild(document.createTextNode(after));
+        node.parentNode.replaceChild(frag, node);
+        return;
+      }
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        if (SKIP.has(node.tagName)) return;
+        // process children snapshot to avoid live NodeList issues
+        var children = Array.from(node.childNodes);
+        for (var i=0;i<children.length;i++) processNode(children[i]);
+      }
+    }
+
+    processNode(root);
+  }
+
+  function attachWikiPreviews(root, maps) {
+    var tooltip;
+    function ensureTip(){
+      if (tooltip) return tooltip;
+      tooltip = document.createElement('div');
+      tooltip.className = 'wikilink-preview';
+      tooltip.innerHTML = '<div class="wikilink-preview-title"></div><div class="wikilink-preview-summary"></div>';
+      document.body.appendChild(tooltip);
+      return tooltip;
+    }
+    function showTip(link, page, evt){
+      var tip = ensureTip();
+      tip.querySelector('.wikilink-preview-title').textContent = page ? page.title : link.textContent;
+      tip.querySelector('.wikilink-preview-summary').textContent = page ? (page.summary||'') : 'Not found';
+      var x = evt.clientX + 12;
+      var y = evt.clientY + 12;
+      tip.style.left = x + 'px';
+      tip.style.top = y + 'px';
+      tip.style.display = 'block';
+    }
+    function hideTip(){ if (tooltip) tooltip.style.display = 'none'; }
+
+    root.addEventListener('mousemove', function(e){
+      var t = e.target;
+      if (!(t && t.classList && t.classList.contains('wikilink'))) return;
+      var slug = t.getAttribute('data-wiki-slug');
+      var page = slug ? maps.bySlug[slug] : null;
+      showTip(t, page, e);
+    });
+    root.addEventListener('mouseleave', hideTip, true);
+  }
+
+  function initWikilinks() {
+    if (!ENABLE_WIKILINKS) return;
+    if (!window.__WIKI_INDEX || !window.__WIKI_INDEX.length) {
+      var dataEl = document.getElementById('wiki-index');
+      if (dataEl) {
+        try { window.__WIKI_INDEX = JSON.parse(dataEl.textContent || '[]'); } catch (e) {}
+      }
+    }
+    if (!window.__WIKI_INDEX || !window.__WIKI_INDEX.length) return;
+    var maps = buildIndexMaps(window.__WIKI_INDEX);
+    var content = document.querySelector('.post-content');
+    if (!content) return;
+    transformWikilinks(content, maps);
+    attachWikiPreviews(content, maps);
+  }
+
+  function init() {
+    insertThemeSlider();
+    // Apply saved theme on load to ensure dark mode is honored site-wide
+    try {
+      var saved = localStorage.getItem('pref-theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    } catch(e) {}
+    initWikilinks();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+<script type="application/json" id="wiki-index">
+[
+  {{- $pages := where .Site.RegularPages "Section" "blog" -}}
+  {{- $comma := false -}}
+  {{- range $i, $p := $pages -}}
+    {{- if $comma }},{{ end -}}
+    {
+      "title": {{ $p.Title | jsonify }},
+      "slug": {{ (or (and $p.File $p.File.BaseFileName) ($p.Title | urlize)) | jsonify }},
+      "url": {{ $p.RelPermalink | jsonify }},
+      "summary": {{ ($p.Summary | plainify) | replaceRE "\n+" " " | truncate 220 | jsonify }},
+      "tags": {{ $p.Params.tags | jsonify }},
+      "links": {{ (findRE "\\[\\[([^\\]|]+)" (or $p.RawContent $p.Content)) | jsonify }}
+    }
+    {{- $comma = true -}}
+  {{- end -}}
+]
+</script>

@@ -1,0 +1,52 @@
+# Hugo
+public/
+resources/_gen/
+.hugo_build.lock
+_build_preview/
+_docs/CONFIGURATION_CHANGES.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+secrets/
+SITE_BASE_URL*
+
+# Docker
+docker-compose.override.yml
+
+# Local note or scratch files (optional, remove if not needed)
+notes/
+*.private.md
+
+# Build artifacts
+dist/
+build/
+
+# Node tooling cache (only if you add JS tooling)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Temporary files
+*.tmp
+*.bak
+*~
+.DS_Store

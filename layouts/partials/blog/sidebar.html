@@ -1,0 +1,91 @@
+<aside class="blog-sidebar">
+  <!-- Search Box -->
+  <div class="sidebar-section search-section">
+    <input 
+      type="search" 
+      id="blog-search" 
+      class="search-input" 
+      placeholder="Search posts..."
+      autocomplete="off"
+    />
+    <div id="search-results" class="search-results"></div>
+  </div>
+
+  <!-- Navigation Tree -->
+  <nav class="sidebar-section nav-tree">
+    <div class="tree-content">
+      {{- $current := . }}
+      <ul class="folder-tree">
+        {{- range .Sections.ByTitle }}
+          <li class="tree-node level-root">
+            <details class="tree-branch root-branch" open>
+              <summary>
+                <svg class="icon icon-collapsed" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg>
+                <svg class="icon icon-expanded" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M6 9l6 6 6-6"/></svg>
+                <span class="folder-name">{{ .Title }}</span>
+              </summary>
+              {{- if .Sections }}
+              <ul class="branch-list">
+                {{- range .Sections.ByTitle }}
+                  {{- template "blog-tree-node" (dict "Section" . "Current" $current "Level" 1) }}
+                {{- end }}
+              </ul>
+              {{- end }}
+              {{- if .RegularPages }}
+              <ul class="file-list">
+                {{- range .RegularPages }}
+                {{- $isActive := eq .RelPermalink $current.RelPermalink }}
+                <li class="tree-item{{ if $isActive }} active{{ end }}">
+                  <a href="{{ .RelPermalink }}" {{ if $isActive }}aria-current="page"{{ end }}>
+                    <span class="file-icon" aria-hidden="true">|</span>
+                    <span class="tree-label">{{ .Title }}</span>
+                  </a>
+                </li>
+                {{- end }}
+              </ul>
+            </details>
+          </li>
+          {{- end }}
+        {{- end }}
+      </ul>
+    </div>
+  </nav>
+</aside>
+
+{{- define "blog-tree-node" -}}
+  {{- $section := .Section -}}
+  {{- $current := .Current -}}
+  {{- $level := .Level -}}
+  {{- $isCurrent := eq $section.RelPermalink $current.RelPermalink -}}
+  {{- $isAncestor := $section.IsAncestor $current -}}
+  {{- $shouldOpen := or $isCurrent (or $isAncestor (eq $level 0)) -}}
+  <li class="tree-node level-{{ $level }}">
+    <details class="tree-branch" {{ if $shouldOpen }}open{{ end }}>
+      <summary>
+        <svg class="icon icon-collapsed" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg>
+        <svg class="icon icon-expanded" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M6 9l6 6 6-6"/></svg>
+        <span class="folder-name">{{ $section.LinkTitle }}</span>
+      </summary>
+      {{- if $section.Sections }}
+      <ul class="branch-list">
+        {{- range $section.Sections }}
+          {{- template "blog-tree-node" (dict "Section" . "Current" $current "Level" (add $level 1)) }}
+        {{- end }}
+      </ul>
+      {{- end }}
+      {{- if $section.RegularPages }}
+      <ul class="file-list">
+        {{- range $section.RegularPages }}
+        {{- $isActive := eq .RelPermalink $current.RelPermalink }}
+        <li class="tree-item{{ if $isActive }} active{{ end }}">
+          <a href="{{ .RelPermalink }}" {{ if $isActive }}aria-current="page"{{ end }}>
+            <span class="file-icon" aria-hidden="true">|</span>
+            <span class="tree-label">{{ .Title }}</span>
+          </a>
+        </li>
+        {{- end }}
+      </ul>
+      {{- end }}
+    </details>
+  </li>
+{{- end -}}

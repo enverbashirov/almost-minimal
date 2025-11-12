@@ -1,0 +1,176 @@
+/* CV vertical timeline styles */
+.cv-wrapper{
+  position:relative;
+  max-width:900px;
+  margin:0 auto;
+  padding:1rem 1rem 1rem 1.5rem;
+  border-left:2px solid var(--border);
+}
+
+.cv-wrapper .cv-section{ position:relative; margin:2.25rem 0; }
+
+/* Generic heading spacing for markdown sections */
+.cv-wrapper h2{
+  margin:0 0 .5rem 0;
+  padding: 0.25rem 0;
+  line-height:1.2;
+  position:relative;
+  cursor:pointer; /* indicates collapsible */
+  transition: opacity 0.2s ease;
+}
+
+.cv-wrapper h2:hover {
+  opacity: 0.8;
+}
+
+/* Dot marker on the vertical line for each section */
+/* Heading marker dots centered over the vertical line */
+.cv-wrapper h2::before{
+  content:"";
+  position:absolute;
+  left: -1.5rem; /* precise center: border starts at -1.5rem, border is 2px, so center is at -1.5rem + 1px */
+  top:50%;
+  transform: translate(-50%, -50%);
+  width:12px; height:12px; border-radius:50%;
+  background: var(--primary);
+  box-shadow:0 0 0 3px rgb(var(--primary-rgb) / 0.15);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Dot state indicators using palette colors with high contrast */
+/* Collapsed state: very dim (85% transparent secondary) */
+.cv-wrapper h2[data-cv-state="collapsed"]::before{
+  background: rgba(128, 128, 128, 0.25);
+  box-shadow: 0 0 0 3px rgba(128, 128, 128, 0.08);
+  transition: background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hover-open state: secondary accent bright (60% opacity) */
+.cv-wrapper h2[data-cv-state="hover-open"]::before{
+  background: var(--secondary);
+  opacity: 0.85;
+  box-shadow: 0 0 0 4px rgba(var(--primary-rgb, 254 78 0) / 0.25), 0 0 12px rgba(var(--primary-rgb, 254 78 0) / 0.5);
+  transition: background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+/* Locked-open state: primary accent full brightness (100% + glow) */
+.cv-wrapper h2[data-cv-state="locked-open"]::before{
+  background: var(--primary);
+  opacity: 1;
+  box-shadow: 0 0 0 4px rgb(var(--primary-rgb) / 0.5), 0 0 16px rgb(var(--primary-rgb) / 0.7);
+  transition: background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+/* Collapsible bodies */
+.cv-section-body{
+  overflow:hidden;
+  max-height:0;
+  opacity:0;
+  transform: translateY(-2px);
+  transition: max-height .3s ease, opacity .2s ease, transform .2s ease;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Hover-open state: temporarily show content */
+.cv-section-body.hover-open {
+  max-height: 1000px;
+  opacity:1;
+  transform: translateY(0);
+}
+
+/* Hover open when not locked - CSS-based fallback */
+.cv-collapsible-header:hover + .cv-section-body:not(.locked-open){
+  max-height: 1000px;
+  opacity:1;
+  transform: translateY(0);
+}
+
+/* Programmatically open/close - locked state always visible */
+.cv-section-body.locked-open{
+  max-height: 2000px;
+  opacity:1;
+  transform: translateY(0) !important;
+  pointer-events: auto;
+}
+.cv-section-body.collapsed{ /* explicit collapsed state for JS toggling */
+  max-height:0;
+  opacity:0;
+}
+
+/* About block */
+.cv-about{ display:flex; gap:1rem; align-items:flex-start; }
+.cv-about .cv-photo{ width:84px; height:84px; border-radius:50%; overflow:hidden; flex:0 0 auto; border:2px solid rgb(var(--primary-rgb) / 0.25); }
+.cv-about .cv-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+.cv-about .cv-text{ flex:1 1 auto; }
+
+/* Dark mode: grayscale photo border */
+[data-theme="dark"] .cv-about .cv-photo {
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+/* CV icon links section - matching landing page style */
+.cv-links{ display:flex; gap:1.5rem; margin-top:0.5rem; margin-bottom: 1.5rem; }
+.cv-links a{ display:inline-flex; align-items:center; justify-content:center; transition: transform 0.2s ease, opacity 0.2s ease, color 0.2s ease; }
+.cv-links a:hover{ transform: translateY(-2px); }
+.cv-links a:hover .cv-icon{ color: var(--primary-dark); }
+.cv-icon{ width:36px; height:36px; color: var(--primary); transition: color 0.2s ease; }
+
+/* Dark mode: grayscale CV icons */
+[data-theme="dark"] .cv-icon {
+    color: #cccccc;
+}
+
+[data-theme="dark"] .cv-links a:hover .cv-icon {
+    color: #ffffff;
+}
+
+/* Divider between About and first section */
+.cv-about{ margin-bottom: 0.25rem; padding-bottom: 0.25rem; border-bottom: 1px solid rgba(128,128,128,.08); }
+
+/* Add dividers between all h2 sections */
+.cv-wrapper h2 {
+  margin-top: 0.25rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid rgba(128,128,128,.08);
+}
+
+/* Remove top border from first h2 to avoid double border */
+.cv-wrapper h2:first-of-type {
+  border-top: none;
+  padding-top: 0.125rem;
+}
+
+/* Experience list */
+.cv-experience ul{ list-style:none; padding:0; margin:0; }
+.cv-experience li{ padding:.75rem 0; border-bottom:1px dashed rgba(128,128,128,.25); }
+.cv-experience li:last-child{ border-bottom:none; }
+.cv-exp-title{ font-weight:700; }
+.cv-exp-meta{ color: var(--secondary-content); font-size:.95rem; margin-top:.15rem; }
+.cv-exp-desc{ margin-top:.35rem; }
+
+/* Tech stack chips */
+.cv-tech-list{ display:flex; flex-wrap:wrap; gap:.5rem; }
+.cv-chip{ padding:.35rem .6rem; border-radius:999px; font-size:.95rem; font-weight:600; letter-spacing:.01em; }
+[data-theme="dark"] .cv-chip{ background: rgb(var(--primary-rgb) / 0.14); color: var(--content); border:1px solid rgb(var(--primary-rgb) / 0.28); }
+[data-theme="light"] .cv-chip{ background: var(--primary); color: #fff; border:1px solid rgb(var(--primary-rgb) / 0.4); }
+
+/* Education list */
+.cv-education ul{ list-style:none; padding:0; margin:0; }
+.cv-education li{ padding:.5rem 0; display:flex; flex-direction:column; }
+.cv-ed-title{ font-weight:700; }
+.cv-ed-meta{ color: var(--secondary-content); font-size:.95rem; }
+
+/* Subtle spacing between major sections */
+.cv-wrapper h2 + *{ padding-top:.5rem; }
+
+/* Tech Stack shields.io badges - ensure inline display */
+.cv-wrapper img[src*="shields.io"] {
+  display: inline-block;
+  margin: 0.25rem 0.25rem 0.25rem 0;
+  vertical-align: middle;
+}
+
+@media (max-width: 640px){
+  .cv-about{ flex-direction:column; }
+}

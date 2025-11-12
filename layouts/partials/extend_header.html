@@ -1,0 +1,11 @@
+<script>
+// Apply saved theme as early as possible to avoid FOUC
+(function(){
+    try {
+        var saved = localStorage.getItem('pref-theme');
+        if (saved) {
+            document.documentElement.setAttribute('data-theme', saved);
+        }
+    } catch(e) {}
+})();
+</script>

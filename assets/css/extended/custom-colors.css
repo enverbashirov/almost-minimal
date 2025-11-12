@@ -1,0 +1,513 @@
+/* Custom Yellow/Orange Color Palette for Portfolio */
+
+:root {
+    /* Dark Mode Core Palette - Grayscale except for gradients */
+    --theme: #232323;             /* Soft dark background */
+    --entry: #2d2d2d;             /* Slightly lighter for elevated surfaces */
+    
+    /* Gradient colors - ONLY for h1 gradient */
+    --primary-light: #F5E6A0;     /* Lightest accent - slightly less bright yellow */
+    --primary: #FEE2AD;           /* Warm accent */
+    --primary-mid: #FFC7A7;       /* Intermediate accent */
+    --primary-dark: #FF9A56;      /* Strong accent - more orange */
+    
+    /* Grayscale for all other elements */
+    --secondary: #cccccc;         /* Light gray for subtle elements */
+    --tertiary: #3d3d3d;          /* Dark gray for tags/chips */
+
+    --content: #e8e8e8;           /* Light gray text for readability */
+    --secondary-content: #a0a0a0; /* Medium gray for secondary text */
+    --hljs-bg: #2d2d2d;           /* Highlight background matches entry */
+    --code-bg: #2d2d2d;           /* Code block background */
+    --border: #4a4a4a;            /* Medium gray border */
+
+    /* Precomputed RGB for grayscale tints */
+    --primary-rgb: 200 200 200;   /* Neutral gray */
+    --primary-mid-rgb: 160 160 160; /* Medium gray */
+
+    /* Links - grayscale */
+    --link: #cccccc;
+    --link-hover: #ffffff;
+
+    /* Selection */
+    --selection-bg: #4a4a4a;
+    --selection-color: #ffffff;
+}
+
+[data-theme="light"] {
+    /* Light Mode Core Palette Revamp */
+    --theme: #F6F1E9;             /* Soft parchment background */
+    --entry: #F6F1E9;             /* Keep consistent for flat aesthetic */
+    --primary-light: #ffae03ff;     /* Orange web highlight */
+    --primary: #e67f0dff;           /* Fulvous accent */
+    --primary-dark: #e9190fff;      /* Chili red */
+    --primary-mid: #fe4e00ff;       /* Aerospace orange */
+    --secondary: #ff0f80ff;         /* Rose secondary accent */
+    --tertiary: rgb(255 174 3 / 0.1);          /* Light orange tint for tags */
+
+    --content: #000000;           /* Dark text for strong contrast */
+    --secondary-content: #666666; /* Medium gray for secondary */
+    --hljs-bg: #f9f9f9;           /* Very light gray for highlights */
+    --code-bg: #f5f5f5;           /* Light gray for code blocks */
+    --border: #cccccc;            /* Light gray borders */
+    --primary-rgb: 230 127 13;     /* #e67f0dff */
+    --primary-mid-rgb: 254 78 0;/* #fe4e00ff */
+
+    --link: #e67f0dff;
+    --link-hover: #e9190fff;
+
+    --selection-bg: #ffae03ff;
+    --selection-color: #000000;
+}
+
+/* Apply color palette globally */
+::selection {
+    background: var(--selection-bg);
+    color: var(--selection-color);
+}
+
+/* Headings with gradient accent */
+h1, h2, h3, h4, h5, h6 {
+    /* Default text color fallback when gradients don’t apply */
+    color: var(--content);
+}
+
+/* Dark mode: layered warm rose gradient */
+[data-theme="dark"] h1 {
+    background: linear-gradient(135deg,
+        var(--primary-light) 0%,
+        var(--primary) 35%,
+        var(--primary-mid) 65%,
+        var(--primary-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Dark mode: h2-h6 constant color - GRAYSCALE */
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+    color: #e8e8e8;
+}
+
+/* Light mode: golden to deep earthy gradient */
+[data-theme="light"] h1 {
+    background: linear-gradient(135deg,
+        var(--primary-light) 0%,
+        var(--primary) 50%,
+        var(--primary-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Light mode: h2-h6 constant color */
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+    color: var(--primary-dark);
+}
+
+/* Dark mode: subtly shift non-gradient heading colors (do not change gradients) - GRAYSCALE */
+[data-theme="dark"] .markdown-body h2 { color: #e8e8e8 !important; }
+[data-theme="dark"] .markdown-body h3 { color: #e8e8e8 !important; }
+[data-theme="dark"] .markdown-body h4 { color: #e8e8e8 !important; }
+[data-theme="dark"] .markdown-body h5 { color: #e8e8e8 !important; }
+[data-theme="dark"] .markdown-body h6 { color: #cccccc !important; opacity: 0.9; }
+
+/* Light mode blog title follows new gradient */
+[data-theme="light"] .blog-title {
+    background: linear-gradient(135deg,
+        var(--primary-light) 0%,
+        var(--primary) 50%,
+        var(--primary-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Links */
+a {
+    color: var(--link);
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--link-hover);
+}
+
+/* Bold text emphasis */
+strong, b {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+/* Dark mode: grayscale bold text */
+[data-theme="dark"] strong,
+[data-theme="dark"] b {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Code blocks */
+code {
+    background: var(--code-bg);
+    color: var(--primary);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: Consolas, "Fira Code", "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Dark mode: grayscale code */
+[data-theme="dark"] code {
+    background: var(--code-bg);
+    color: #cccccc;
+}
+
+pre code {
+    color: var(--content);
+    background: transparent;
+    font-family: Consolas, "Fira Code", "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Ensure all code blocks use Consolas where possible */
+pre, kbd, samp, tt, .chroma {
+    font-family: Consolas, "Fira Code", "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Hashtags in markdown content */
+.post-content p code,
+.markdown-body p code {
+    background: rgb(var(--primary-rgb) / 0.14); /* subtle primary tint */
+    color: var(--content);
+    border: 1px solid rgb(var(--primary-rgb) / 0.28);
+    padding: 0.15em 0.5em;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+/* Dark mode: grayscale hashtags */
+[data-theme="dark"] .post-content p code,
+[data-theme="dark"] .markdown-body p code {
+    background: rgba(255, 255, 255, 0.08);
+    color: #e8e8e8;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] .post-content p code,
+[data-theme="light"] .markdown-body p code {
+    background: var(--primary);
+    color: #fefcf7;
+}
+
+.post-content p code:hover,
+.markdown-body p code:hover {
+    background: rgb(var(--primary-rgb) / 0.22);
+    color: var(--content);
+}
+
+/* Dark mode: grayscale hashtag hover */
+[data-theme="dark"] .post-content p code:hover,
+[data-theme="dark"] .markdown-body p code:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+/* Buttons and interactive elements */
+button, .button {
+    background: var(--primary);
+    color: #1a1a1a;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+button:hover, .button:hover {
+    background: var(--primary-light);
+    color: #1a1a1a;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgb(var(--primary-rgb) / 0.4);
+}
+
+[data-theme="light"] button, 
+[data-theme="light"] .button {
+    background: var(--primary);
+    color: #fefcf7;
+}
+
+[data-theme="light"] button:hover, 
+[data-theme="light"] .button:hover {
+    background: var(--primary-dark);
+    color: #fefcf7;
+}
+
+/* Dark mode buttons: tone down brightness */
+[data-theme="dark"] button,
+[data-theme="dark"] .button {
+    background: rgb(var(--primary-rgb) / 0.16);
+    color: var(--content);
+    border: 1px solid rgb(var(--primary-rgb) / 0.32);
+}
+
+[data-theme="dark"] button:hover,
+[data-theme="dark"] .button:hover {
+    background: rgb(var(--primary-rgb) / 0.24);
+    color: var(--content);
+    box-shadow: none;
+}
+
+/* Tags and badges - align with new palettes */
+.post-tags a,
+.tag,
+.badge {
+    background: var(--tertiary);
+    color: var(--content);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+[data-theme="light"] .post-tags a,
+[data-theme="light"] .tag,
+[data-theme="light"] .badge {
+    background: var(--tertiary);
+    color: var(--primary-dark);
+}
+
+.post-tags a:hover,
+.tag:hover,
+.badge:hover {
+    background: var(--primary);
+    color: #1a1a1a;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgb(var(--primary-rgb) / 0.3);
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid var(--primary);
+    background: var(--entry);
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Dark mode: grayscale blockquotes */
+[data-theme="dark"] blockquote {
+    border-left: 4px solid #666666;
+    background: var(--entry);
+}
+
+blockquote p {
+    color: var(--secondary-content);
+}
+
+/* Tables */
+table th {
+    background: var(--primary);
+    color: var(--theme);
+}
+
+/* Dark mode: grayscale table headers */
+[data-theme="dark"] table th {
+    background: #3d3d3d;
+    color: #e8e8e8;
+}
+
+table tr:hover {
+    background: var(--hljs-bg);
+}
+
+/* Cards and panels */
+.card, .panel {
+    border: 1px solid var(--border);
+    background: var(--entry);
+    transition: all 0.2s ease;
+}
+
+.card:hover, .panel:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgb(var(--primary-rgb) / 0.1);
+}
+
+/* Dark mode: grayscale card/panel hover */
+[data-theme="dark"] .card:hover,
+[data-theme="dark"] .panel:hover {
+    border-color: #666666;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+
+/* Scrollbar - Dark mode */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--theme);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* Focus states */
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Header links: no underline on click/hover; emphasize color/weight instead */
+header a { text-decoration: none !important; color: inherit; }
+header a:hover,
+header a:active,
+header a:focus,
+header a:focus-visible { text-decoration: none !important; color: var(--primary); font-weight: 700; }
+header a:visited { color: inherit; text-decoration: none !important; }
+header a.active,
+header a[aria-current="page"] { font-weight: 700; color: inherit; text-decoration: none !important; }
+
+/* Theme toggle icon - clean minimal style like stephango.com */
+button#theme-toggle {
+    display: none !important; /* Hide default toggle, using custom slider */
+}
+
+/* Custom theme slider toggle */
+.theme-slider-toggle {
+    background: transparent !important;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    margin: auto 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: inherit; /* color individual icons below */
+}
+
+/* Sun/Moon Icons */
+.theme-slider-toggle .icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+}
+.theme-slider-toggle .icon-sun { display: inline-block; color: var(--primary-dark); }
+.theme-slider-toggle .icon-moon { display: none; }
+[data-theme="dark"] .theme-slider-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-slider-toggle .icon-moon { display: inline-block; color: var(--primary); }
+
+.theme-slider-toggle:hover { opacity: 1; box-shadow: 0 0 0 2px var(--border); }
+.theme-slider-toggle:focus-visible { box-shadow: 0 0 0 2px var(--primary); outline: none; }
+
+.theme-slider-toggle:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary);
+}
+
+button#theme-toggle svg {
+    display: block;
+    stroke: var(--content);
+    fill: none;
+    transition: none;
+}
+
+[data-theme="dark"] button#theme-toggle svg {
+    stroke: var(--content);
+}
+
+[data-theme="light"] button#theme-toggle svg {
+    stroke: var(--content);
+}
+
+/* Active states */
+.active,
+[aria-current="page"] {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Selection contrast: ensure text is visible globally */
+*::selection {
+    background: var(--primary);
+    color: #1a1a1a;
+}
+*::-moz-selection {
+    background: var(--primary);
+    color: #1a1a1a;
+}
+
+/* Ensure selection is visible for headings with gradient/transparent fill */
+h1::selection, h2::selection, h3::selection, h4::selection, h5::selection, h6::selection {
+    background: var(--primary) !important;
+    color: #1a1a1a !important;
+    -webkit-text-fill-color: #1a1a1a !important;
+}
+h1::-moz-selection, h2::-moz-selection, h3::-moz-selection, h4::-moz-selection, h5::-moz-selection, h6::-moz-selection {
+    background: var(--primary) !important;
+    color: #1a1a1a !important;
+}
+
+/* Animations */
+@keyframes pulse-yellow {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.pulse {
+    animation: pulse-yellow 2s ease-in-out infinite;
+}
+
+/* Gradient backgrounds for special sections */
+.hero-section,
+.featured-section {
+    background: linear-gradient(135deg,
+        rgb(var(--primary-mid-rgb) / 0.08) 0%,
+        rgb(var(--primary-rgb) / 0.06) 100%);
+}
+
+[data-theme="light"] .hero-section,
+[data-theme="light"] .featured-section {
+    background: linear-gradient(135deg,
+        rgb(var(--primary-mid-rgb) / 0.06) 0%,
+        rgb(var(--primary-rgb) / 0.04) 100%);
+}
+
+/* Hide page headers for WIP pages (Projects, CV) */
+body:has(.post-single):has([style*="Projects Loading"]) .page-header,
+body:has(.post-single):has([style*="Work in Progress"]) .page-header,
+body:has(.post-single):has([style*="Under Construction"]) .page-header,
+body:has(.post-single):has([style*="Projects Loading"]) .post-header,
+body:has(.post-single):has([style*="Work in Progress"]) .post-header,
+body:has(.post-single):has([style*="Under Construction"]) .post-header {
+    display: none;
+}
+
+/* Alternative: Use data attribute approach */
+.page-wip .page-header,
+.page-wip .post-header,
+.page-wip .breadcrumbs,
+.page-wip .toc {
+    display: none !important;
+}

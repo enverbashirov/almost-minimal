@@ -1,0 +1,65 @@
+<!-- Custom color palette -->
+{{- $customColors := resources.Get "css/extended/custom-colors.css" }}
+{{- if $customColors }}
+{{- $customColors = $customColors | resources.Minify | fingerprint }}
+<link rel="stylesheet" href="{{ $customColors.RelPermalink }}">
+{{- end }}
+
+{{- if .IsHome }}
+<!-- Animated background for home page -->
+{{- $animatedBgCSS := resources.Get "css/extended/animated-bg.css" }}
+{{- if $animatedBgCSS }}
+{{- $animatedBgCSS = $animatedBgCSS | resources.Minify | fingerprint }}
+<link rel="stylesheet" href="{{ $animatedBgCSS.RelPermalink }}">
+{{- end }}
+{{- $animatedBgJS := resources.Get "js/animated-bg.js" }}
+{{- if $animatedBgJS }}
+{{- $animatedBgJS = $animatedBgJS | resources.Minify | fingerprint }}
+<script src="{{ $animatedBgJS.RelPermalink }}" defer></script>
+{{- end }}
+{{- end }}
+
+{{- if or (eq .Section "cv") (eq .Type "cv") }}
+<!-- CV page specific styles -->
+{{- $cvCSS := resources.Get "css/extended/cv.css" }}
+{{- if $cvCSS }}
+{{- $cvCSS = $cvCSS | resources.Minify | fingerprint }}
+<link rel="stylesheet" href="{{ $cvCSS.RelPermalink }}">
+{{- end }}
+<!-- CV page behavior -->
+{{- $cvJS := resources.Get "js/cv.js" }}
+{{- if $cvJS }}
+{{- $cvJS = $cvJS | resources.Minify | fingerprint }}
+<script src="{{ $cvJS.RelPermalink }}" defer></script>
+{{- end }}
+{{- end }}
+{{- if eq .Section "blog" }}
+<!-- Blog-specific assets -->
+{{- $blogCSS := resources.Get "css/blog.css" }}
+{{- if $blogCSS }}
+{{- $blogCSS = $blogCSS | resources.Minify | fingerprint }}
+<link rel="stylesheet" href="{{ $blogCSS.RelPermalink }}">
+{{- end }}
+
+<!-- Fuse.js for search -->
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+
+<!-- Blog scripts -->
+{{- $sidebarJS := resources.Get "js/sidebar.js" }}
+{{- if $sidebarJS }}
+{{- $sidebarJS = $sidebarJS | resources.Minify }}
+<script src="{{ $sidebarJS.RelPermalink }}"></script>
+{{- end }}
+
+{{- $blogSearch := resources.Get "js/blog-search.js" }}
+{{- if $blogSearch }}
+{{- $blogSearch = $blogSearch | resources.Minify }}
+<script src="{{ $blogSearch.RelPermalink }}" defer></script>
+{{- end }}
+
+{{- $graphView := resources.Get "js/graph-view.js" }}
+{{- if $graphView }}
+{{- $graphView = $graphView | resources.Minify }}
+<script src="{{ $graphView.RelPermalink }}" defer></script>
+{{- end }}
+{{- end }}
